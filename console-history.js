@@ -87,6 +87,56 @@ console._collect = function (type, args) {
     }
   }
 
+  if(console.history.length > 2500){
+      console.log("\nClearing console.log history");
+      console.history = [];
+  }
+
   // Add the log to our history.
   console.history.push({ type: type, timestamp: time, arguments: args, stack: stack })
+}
+
+function downloadJSON(objArr) {
+    //Convert JSON Array to string.
+    let json = JSON.stringify(objArr, null, 4);
+    //Convert JSON string to BLOB.
+    json = [json];
+    let blob1 = new Blob(json, { type: "text/plain;charset=utf-8" });
+
+    //Check the Browser.
+    let isIE = false || !!document.documentMode;
+    if (isIE) {
+        window.navigator.msSaveBlob(blob1, "logs.txt");
+    } else {
+        let url = window.URL || window.webkitURL;
+        let link = url.createObjectURL(blob1);
+        let a = document.createElement("a");
+        a.download = "logs.txt";
+        a.href = link;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+}
+
+if(window && !window.exportLogs){
+    window.exportLogs = function(){
+        return console.history;
+    }
+}
+
+if(window && !window.exportLogsFile){
+    window.exportLogsFile = function(){
+        downloadJSON(console.history);
+    }
+}
+
+if(window){
+    window.onError = function(message, source, lineno, colno, error) {
+        console.error(message, error);
+    }
+
+    window.onunhandledrejection = function(event){
+        console.error(event.reason);
+    }
 }

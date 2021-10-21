@@ -82,9 +82,17 @@ console._intercept = function (type, args) {
 
 ```
 
+### API
+
+* `window.exportLogs` - This function simply return entire log history array.
+
+* `window.exportLogsFile` - This function allows to download log file with entire log history.
+
+
 #### Limitations
 
 Every saved console log is stored locally in the array `console.history`. A page reload will erase all history, as the array is not permanently stored. You could use `localStorage` or `sessionStorage` for that.
+Log history clears automatically when history size is over 2500 records.
 
 ### How it works
 This script is basically a man-in-the-middle for all `console[log/info/warn/error/debug]` functions. Every call gets intercepted, printed and added to the history array.
@@ -92,6 +100,8 @@ This script is basically a man-in-the-middle for all `console[log/info/warn/erro
 ![](test/diagram.png)
 
 The code is not that hard to understand, see [`console-history.js`](/console-history.js) with in-line comments explaining the code.
+
+It also uses global error handlers to get exception in log history.
 
 ### Contributing
 If you'd like to contribute to console.history, or file a bug or feature request, please head over to the issue tracker or open a pull request.
