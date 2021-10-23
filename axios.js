@@ -3,12 +3,14 @@ const axios = require('axios');
 require('./index');
 
 const requestErrorHandler = (error) => {
-    if (error.config) {
-        console.log('\n\nAxios error: \n', error.config.url, error.config.data);
-    }
+    const url = error.config ? error.config.url : '';
+    const data = error.config ? error.config.data : '';
+    const response = error.response ? error.response.data : '';
+    const status = error.response ? error.response.status : '';
+    const statusText = error.response ? error.response.statusText : '';
 
-    if (error.response) {
-        console.log(error.response);
+    if (error.config) {
+        console.error('[*] Axios Error: ', url, data, response, status, statusText);
     }
 
     Promise.reject(error);
